@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rock Paper Scissors</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #333;
+    }
+
+    .game-container {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      max-width: 500px;
+      width: 90%;
+      transform: translateY(0);
+      transition: transform 0.3s ease;
+    }
+
+    .game-container:hover {
+      transform: translateY(-5px);
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 30px;
+      background: linear-gradient(45deg, #667eea, #764ba2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .input-section {
+      margin-bottom: 30px;
+    }
+
+    #username {
+      padding: 15px 20px;
+      font-size: 16px;
+      border: 2px solid #e0e0e0;
+      border-radius: 50px;
+      outline: none;
+      width: 100%;
+      max-width: 300px;
+      transition: all 0.3s ease;
+      background: #f8f9fa;
+    }
+
+    #username:focus {
+      border-color: #667eea;
+      box-shadow: 0 0 20px rgba(102, 126, 234, 0.2);
+      background: white;
+    }
+
+    .choices-section {
+      margin: 30px 0;
+    }
+
+    .choice-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-top: 20px;
+    }
+
+    .choice-btn {
+      background: linear-gradient(45deg, #667eea, #764ba2);
+      color: white;
+      border: none;
+      padding: 15px 25px;
+      font-size: 18px;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      min-width: 120px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .choice-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.5s;
+    }
+
+    .choice-btn:hover::before {
+      left: 100%;
+    }
+
+    .choice-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+    }
+
+    .choice-btn:active {
+      transform: translateY(0);
+    }
+
+    .emoji {
+      font-size: 24px;
+      margin-right: 8px;
+    }
+
+    #result {
+      margin-top: 30px;
+      padding: 20px;
+      background: #f8f9fa;
+      border-radius: 15px;
+      font-size: 18px;
+      line-height: 1.6;
+      min-height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-left: 4px solid #667eea;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.5s ease;
+    }
+
+    #result.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .loading {
+      display: none;
+      margin-top: 20px;
+    }
+
+    .spinner {
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid #667eea;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .error {
+      color: #e74c3c;
+      background: #ffeaea;
+      border-left-color: #e74c3c;
+    }
+
+    .success {
+      color: #27ae60;
+      background: #eafaf1;
+      border-left-color: #27ae60;
+    }
+
+    @media (max-width: 600px) {
+      .game-container {
+        padding: 30px 20px;
+      }
+      
+      h1 {
+        font-size: 2rem;
+      }
+      
+      .choice-buttons {
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .choice-btn {
+        width: 200px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="game-container">
+    <h1>🎮 Rock Paper Scissors</h1>
+    
+    <div class="input-section">
+      <input 
+        type="text" 
+        id="username" 
+        placeholder="Enter your name to start playing..."
+        autocomplete="name"
+      />
+    </div>
+
+    <div class="choices-section">
+      <p style="margin-bottom: 15px; font-size: 18px; color: #666;">Choose your weapon:</p>
+      <div class="choice-buttons">
+        <button class="choice-btn" data-choice="rock">
+          <span class="emoji">🪨</span>Rock
+        </button>
+        <button class="choice-btn" data-choice="paper">
+          <span class="emoji">📄</span>Paper
+        </button>
+        <button class="choice-btn" data-choice="scissors">
+          <span class="emoji">✂</span>Scissors
+        </button>
+      </div>
+    </div>
+
+    <div class="loading">
+      <div class="spinner"></div>
+      <p>Playing...</p>
+    </div>
+
+    <div id="result"></div>
+  </div>
+
+  <script>
+    class RockPaperScissorsGame {
+      constructor() {
+        this.resultElement = document.getElementById('result');
+        this.loadingElement = document.querySelector('.loading');
+        this.usernameInput = document.getElementById('username');
+        this.initializeEventListeners();
+      }
+
+      initializeEventListeners() {
+        // Add click listeners to all choice buttons
+        document.querySelectorAll('.choice-btn').forEach(button => {
+          button.addEventListener('click', (e) => {
+            const choice = e.currentTarget.dataset.choice;
+            this.play(choice);
+          });
+        });
+
+        // Allow Enter key to focus on first button when username is entered
+        this.usernameInput.addEventListener('keypress', (e) => {
+          if (e.key === 'Enter' && this.usernameInput.value.trim()) {
+            document.querySelector('.choice-btn').focus();
+          }
+        });
+      }
+
+      validateUserName() {
+        const userName = this.usernameInput.value.trim();
+        if (!userName) {
+          this.showError('Please enter your name to start playing! 🎯');
+          this.usernameInput.focus();
+          return null;
+        }
+        return userName;
+      }
+
+      showLoading() {
+        this.loadingElement.style.display = 'block';
+        this.resultElement.classList.remove('show');
+      }
+
+      hideLoading() {
+        this.loadingElement.style.display = 'none';
+      }
+
+      showResult(content, isError = false) {
+        this.hideLoading();
+        this.resultElement.innerHTML = content;
+        this.resultElement.className = isError ? 'error show' : 'success show';
+      }
+
+      showError(message) {
+        this.resultElement.innerHTML = `❌ ${message}`;
+        this.resultElement.className = 'error show';
+      }
+
+      formatGameResult(data, userName) {
+        const choiceEmojis = {
+          rock: '🪨',
+          paper: '📄',
+          scissors: '✂'
+        };
+
+        const resultEmojis = {
+          win: '🎉',
+          lose: '😔',
+          tie: '🤝'
+        };
+
+        const resultTexts = {
+          win: 'You Win!',
+          lose: 'You Lose!',
+          tie: "It's a Tie!"
+        };
+
+        return `
+          <div style="text-align: center;">
+            <h3 style="margin-bottom: 15px; color: #333;">
+              ${resultEmojis[data.result]} ${resultTexts[data.result]}
+            </h3>
+            <div style="display: grid; grid-template-columns: 1fr auto 1fr; gap: 20px; align-items: center; margin: 20px 0;">
+              <div>
+                <p><strong>${userName}</strong></p>
+                <div style="font-size: 2rem;">${choiceEmojis[data.user_choice]}</div>
+                <p>${data.user_choice}</p>
+              </div>
+              <div style="font-size: 1.5rem; color: #666;">VS</div>
+              <div>
+                <p><strong>Computer</strong></p>
+                <div style="font-size: 2rem;">${choiceEmojis[data.computer_choice]}</div>
+                <p>${data.computer_choice}</p>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      async play(userChoice) {
+        const userName = this.validateUserName();
+        if (!userName) return;
+
+        this.showLoading();
+
+        try {
+          const response = await fetch('http://localhost:3000/play', {
+            method: 'POST',
+            headers: { 
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ 
+              user_name: userName, 
+              user_choice: userChoice 
+            })
+          });
+
+          if (!response.ok) {
+            throw new Error(`Server error: ${response.status}`);
+          }
+
+          const data = await response.json();
+          const formattedResult = this.formatGameResult(data, userName);
+          this.showResult(formattedResult);
+
+        } catch (error) {
+          console.error('Game error:', error);
+          this.showError('Unable to connect to the game server. Please try again! 🔄');
+        }
+      }
+    }
+
+    // Initialize the game when the page loads
+    document.addEventListener('DOMContentLoaded', () => {
+      new RockPaperScissorsGame();
+    });
+  </script>
+</body>
+</html
